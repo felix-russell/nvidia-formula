@@ -1,0 +1,4 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+nvidia:
+  base_url: http://developer.download.nvidia.com/compute/cuda/repos

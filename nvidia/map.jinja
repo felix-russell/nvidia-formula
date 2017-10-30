@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{## Start with  defaults from defaults.sls ##}
+{% import_yaml 'nvidia/defaults.yaml' as default_settings %}
+
+{## Setup variable using grains['os_family'] based logic, only add key:values here that differ from whats in defaults.yaml ##}
+{% set os_family_map = salt['grains.filter_by']({
+    'Debian': {
+        "rebuild_initrd_cmd": 'update-initramfs -u'
+    },
+    'RedHat': {
+        "rebuild_initrd_cmd" : 'dracut --force'
+    },
+},  grain="os_family", merge=salt['pillar.get']('nvidia', []))  %}
+
+{## Merge the default settings with the OS-specific changes that were merged with pillar ##}
+{% do default_settings.nvidia.update(os_family_map) %}
+
+{## Merge in nvidia:lookup pillar ##}
+{% set nvidia = salt['pillar.get'](
+        'nvidia',
+        default=default_settings.nvidia,
+        merge=True
+    )
+%}
