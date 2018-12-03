@@ -40,6 +40,8 @@ nvidia_rebuild_inird_cmd:
     - name: {{ nvidia.rebuild_initrd_cmd }}
     - creates:
       - /lib/modules/{{ salt['grains.get']('kernelrelease', '') }}/extras/nvidia.ko
+    - onchanges:
+      - pkg: cuda
 {% endif %}
 
 # This is to set up the cuda path variable sourced by users.
