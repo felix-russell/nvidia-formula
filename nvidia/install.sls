@@ -14,7 +14,7 @@ nvidia-repo:
   {% elif salt['grains.get']('os_family') == 'Debian' or 'Ubuntu' %}
     - file: /etc/apt/sources.list.d/nvidia.list
     - key_url: {{ nvidia.base_url }}/GPGKEY
-    - name: deb {{ nvidia.base_url }}/ubuntu{{ salt['grains.get']('osrelease', '1404') | replace('.','') }}/{{ salt['grains.get']('osarch','x86_64') | replace('amd64','x86_64') }}
+    - name: deb {{ nvidia.base_url }}/ubuntu{{ salt['grains.get']('osrelease', '1404') | replace('.','') }}/{{ salt['grains.get']('osarch','x86_64') | replace('amd64','x86_64') }} /
   {% endif %}
 
 {## Install cuda drivers ##}
@@ -40,6 +40,8 @@ nvidia_rebuild_inird_cmd:
     - name: {{ nvidia.rebuild_initrd_cmd }}
     - creates:
       - /lib/modules/{{ salt['grains.get']('kernelrelease', '') }}/extras/nvidia.ko
+    - onchanges:
+      - pkg: cuda
 {% endif %}
 
 # This is to set up the cuda path variable sourced by users.
